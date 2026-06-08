@@ -1,0 +1,176 @@
+<% layout('layouts/boilerplate') %>
+
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .form-container h1 {
+    font-size: 1.6rem;
+    color: #0f2a36;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f2a36;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #cdd8e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #0f2a36;
+    outline: none;
+    transition: border 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: #1a6b8a;
+  }
+
+  .form-group textarea {
+    height: 100px;
+    resize: vertical;
+  }
+
+  .btn-submit {
+    background: #e8c97a;
+    color: #0f2a36;
+    padding: 0.65rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-submit:hover { background: #0f2a36; color: white; }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #1a6b8a;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .error-field {
+    border: 1.5px solid red !important;
+    background: #fff5f5;
+  }
+</style>
+
+<div class="form-container">
+  <h1>✏️ Edit Listing</h1>
+
+  <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" name="listing[title]" value="<%= listing.title %>" required />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="listing[description]" required><%= listing.description %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Change Image (optional)</label>
+      <img src="<%= listing.image.url %>" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:0.5rem;"/>
+      <input type="file" name="image" accept="image/*" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label>Price (₹ per night)</label>
+      <input type="number" name="listing[price]" value="<%= listing.price %>" required />
+    </div>
+
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" name="listing[location]" value="<%= listing.location %>" required />
+    </div>
+
+    <div class="form-group">
+      <label>Country</label>
+      <input type="text" name="listing[country]" value="<%= listing.country %>" required />
+    </div>
+
+    <div class="form-group">
+      <label>Category</label>
+      <select name="listing[category]">
+        <option value="">-- Select Category --</option>
+        <option value="beach"     <%= listing.category === "beach"     ? "selected" : "" %>>🏖️ Beach</option>
+        <option value="mountain"  <%= listing.category === "mountain"  ? "selected" : "" %>>🏔️ Mountain</option>
+        <option value="city"      <%= listing.category === "city"      ? "selected" : "" %>>🏙️ City</option>
+        <option value="camping"   <%= listing.category === "camping"   ? "selected" : "" %>>🏕️ Camping</option>
+        <option value="castle"    <%= listing.category === "castle"    ? "selected" : "" %>>🏰 Castle</option>
+        <option value="lakefront" <%= listing.category === "lakefront" ? "selected" : "" %>>🌊 Lakefront</option>
+        <option value="skiing"    <%= listing.category === "skiing"    ? "selected" : "" %>>🎿 Skiing</option>
+        <option value="tropical"  <%= listing.category === "tropical"  ? "selected" : "" %>>🌴 Tropical</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-submit">Save Changes</button>
+  </form>
+
+  <a href="/listings/<%= listing._id %>" class="back-link">← Back to Listing</a>
+</div>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    let valid = true;
+
+    document.querySelectorAll('.error-msg').forEach(el => el.remove());
+    document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+
+    function showError(field, msg) {
+      field.classList.add('error-field');
+      const err = document.createElement('small');
+      err.className = 'error-msg';
+      err.style.color = 'red';
+      err.style.display = 'block';
+      err.style.marginTop = '4px';
+      err.textContent = msg;
+      field.insertAdjacentElement('afterend', err);
+      valid = false;
+    }
+
+    const title       = document.querySelector('input[name="listing[title]"]');
+    const description = document.querySelector('textarea[name="listing[description]"]');
+    const price       = document.querySelector('input[name="listing[price]"]');
+    const location    = document.querySelector('input[name="listing[location]"]');
+    const country     = document.querySelector('input[name="listing[country]"]');
+
+    if (title.value.trim().length < 3)        showError(title, "Title must be at least 3 characters.");
+    if (description.value.trim().length < 10)  showError(description, "Description must be at least 10 characters.");
+    if (!price.value || price.value <= 0)      showError(price, "Price must be greater than 0.");
+    if (location.value.trim().length < 2)      showError(location, "Location is required.");
+    if (!country.value.trim())                 showError(country, "Country is required.");
+
+    if (!valid) e.preventDefault();
+  });
+</script>

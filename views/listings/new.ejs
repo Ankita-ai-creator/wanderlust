@@ -1,0 +1,107 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-4" style="max-width:600px;">
+  <h1 class="mb-4" style="color:#0f2a36;">🏡 Post Your Property</h1>
+
+  <form action="/listings" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Title</label>
+      <input type="text" name="listing[title]" class="form-control" placeholder="e.g. Cozy Beach House" minlength="3" required />
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Title must be at least 3 characters.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Description</label>
+      <textarea name="listing[description]" class="form-control" placeholder="Describe your property..." minlength="10" required></textarea>
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Description must be at least 10 characters.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Listing Image</label>
+      <input type="file" name="image" accept="image/*" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Price (₹ per night)</label>
+      <input type="number" name="listing[price]" class="form-control" placeholder="e.g. 2000" min="1" required />
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Price must be greater than 0.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Location</label>
+      <input type="text" name="listing[location]" class="form-control" placeholder="e.g. Goa" minlength="2" required />
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Location is required.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Country</label>
+      <select name="listing[country]" class="form-select" required>
+        <option value="">-- Select Country --</option>
+        <option>India</option>
+        <option>United States</option>
+        <option>United Kingdom</option>
+        <option>Australia</option>
+        <option>Canada</option>
+        <option>France</option>
+        <option>Germany</option>
+        <option>Italy</option>
+        <option>Japan</option>
+        <option>Singapore</option>
+        <option>Dubai</option>
+        <option>Thailand</option>
+        <option>Maldives</option>
+        <option>Sri Lanka</option>
+        <option>Nepal</option>
+        <option>New Zealand</option>
+        <option>Spain</option>
+        <option>Portugal</option>
+        <option>Greece</option>
+        <option>Switzerland</option>
+      </select>
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Please select a country.</div>
+    </div>
+
+    <!-- ── Category ── -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Category</label>
+      <select name="listing[category]" class="form-select" required>
+        <option value="">-- Select Category --</option>
+        <option value="beach">🏖️ Beach</option>
+        <option value="mountain">🏔️ Mountain</option>
+        <option value="city">🏙️ City</option>
+        <option value="camping">🏕️ Camping</option>
+        <option value="castle">🏰 Castle</option>
+        <option value="lakefront">🌊 Lakefront</option>
+        <option value="skiing">🎿 Skiing</option>
+        <option value="tropical">🌴 Tropical</option>
+      </select>
+      <div class="valid-feedback"></div>
+      <div class="invalid-feedback">Please select a category.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Post Listing</button>
+    <a href="/listings" class="btn btn-outline-secondary ms-2">← Back</a>
+
+  </form>
+</div>
+
+<script>
+  (() => {
+    const forms = document.querySelectorAll('.needs-validation');
+    forms.forEach(form => {
+      form.addEventListener('submit', e => {
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      });
+    });
+  })();
+</script>

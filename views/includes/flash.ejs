@@ -1,0 +1,13 @@
+<% if (typeof success !== 'undefined' && success && success.length) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error && error.length) { %>
+  <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
