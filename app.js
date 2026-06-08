@@ -10,7 +10,7 @@ const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
-const User = require("./models/User");
+const User = require("./models/user");
 const ExpressError = require("./utils/ExpressError.js");
 const MongoStore = require("connect-mongo").default;
 
