@@ -1,0 +1,124 @@
+<% layout('layouts/boilerplate') %>
+
+<style>
+  .bookings-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .bookings-container h2 {
+    color: #0f2a36;
+    margin-bottom: 1.5rem;
+  }
+
+  .booking-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .booking-header h4 {
+    color: #0f2a36;
+    margin: 0;
+  }
+
+  .booking-info p {
+    font-size: 0.85rem;
+    color: #777;
+    margin: 0.2rem 0;
+  }
+
+  .booking-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .btn-approve {
+    background: #1a6b8a;
+    color: white;
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .btn-reject {
+    background: #e74c3c;
+    color: white;
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .status-pending  { background: #fff3cd; color: #856404; }
+  .status-approved { background: #d1e7dd; color: #0f5132; }
+  .status-rejected { background: #f8d7da; color: #842029; }
+
+  .no-bookings {
+    text-align: center;
+    color: #777;
+    padding: 3rem;
+  }
+</style>
+
+<div class="bookings-container">
+  <h2>Booking Requests</h2>
+
+  <% if (bookings.length === 0) { %>
+    <div class="no-bookings">
+      <p>No booking requests yet!</p>
+    </div>
+  <% } else { %>
+    <% for (let booking of bookings) { %>
+    <div class="booking-card">
+      <div class="booking-header">
+        <h4><%= booking.listing ? booking.listing.title : "Listing Deleted" %></h4>
+        <span class="status-badge status-<%= booking.status %>">
+          <%= booking.status.toUpperCase() %>
+        </span>
+      </div>
+      <div class="booking-info">
+        <p>👤 Guest: <%= booking.user ? booking.user.username : "Unknown" %></p>
+        <p>📅 Check-in: <%= new Date(booking.checkIn).toDateString() %></p>
+        <p>📅 Check-out: <%= new Date(booking.checkOut).toDateString() %></p>
+        <p>💰 Total: ₹<%= booking.totalPrice.toLocaleString() %></p>
+        <p>🔖 Transaction ID: <%= booking.transactionId %></p>
+      </div>
+
+      <% if (booking.status === "pending") { %>
+      <div class="booking-actions">
+        <form action="/bookings/<%= booking._id %>/status" method="POST" style="margin:0;">
+          <input type="hidden" name="status" value="approved"/>
+          <button class="btn-approve" type="submit">✅ Approve</button>
+        </form>
+        <form action="/bookings/<%= booking._id %>/status" method="POST" style="margin:0;">
+          <input type="hidden" name="status" value="rejected"/>
+          <button class="btn-reject" type="submit">❌ Reject</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+  <% } %>
+</div>

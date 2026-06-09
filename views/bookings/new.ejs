@@ -1,0 +1,128 @@
+<% layout('layouts/boilerplate') %>
+
+<style>
+  .booking-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .booking-container h2 {
+    color: #0f2a36;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    color: #555;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .btn-book {
+    background: #1a6b8a;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-book:hover { background: #0f2a36; }
+
+  .qr-container {
+    text-align: center;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 2px dashed #1a6b8a;
+    border-radius: 10px;
+  }
+
+  .qr-container img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .price-summary {
+    background: #f0f7fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #0f2a36;
+  }
+</style>
+
+<div class="booking-container">
+  <h2>Book: <%= listing.title %></h2>
+
+  <form action="/bookings/<%= listing._id %>" method="POST" id="bookingForm">
+    <div class="form-group">
+      <label>Check-in Date</label>
+      <input type="date" name="checkIn" id="checkIn" required min="<%= new Date().toISOString().split('T')[0] %>"/>
+    </div>
+
+    <div class="form-group">
+      <label>Check-out Date</label>
+      <input type="date" name="checkOut" id="checkOut" required/>
+    </div>
+
+    <div class="price-summary" id="priceSummary" style="display:none;">
+      <!-- ✅ fixed closing tag order -->
+      <p>🌙 <span id="nights"></span> nights × ₹<%= listing.price %> = <strong>₹<span id="total"></span></strong></p>
+    </div>
+
+    <!-- Fake UPI QR -->
+    <div class="qr-container">
+      <p style="font-weight:600; color:#0f2a36;">Scan & Pay via UPI</p>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=wanderlust@upi&pn=Wanderlust&am=<%= listing.price %>&cu=INR" alt="UPI QR Code"/>
+      <p style="font-size:0.8rem; color:#777; margin-top:0.5rem;">wanderlust@upi</p>
+    </div>
+
+    <div class="form-group">
+      <label>Enter UPI Transaction ID</label>
+      <input type="text" name="transactionId" placeholder="e.g. TXN1234567890" required/>
+    </div>
+
+    <button class="btn-book" type="submit">Confirm Booking</button>
+  </form>
+</div>
+
+<script>
+  const checkIn = document.getElementById("checkIn");
+  const checkOut = document.getElementById("checkOut");
+  const price = <%= listing.price %>;
+
+  function calcPrice() {
+    if (checkIn.value && checkOut.value) {
+      let days = Math.ceil((new Date(checkOut.value) - new Date(checkIn.value)) / (1000 * 60 * 60 * 24));
+      if (days > 0) {
+        document.getElementById("nights").innerText = days;
+        document.getElementById("total").innerText = (days * price).toLocaleString();
+        document.getElementById("priceSummary").style.display = "block";
+      }
+    }
+  }
+
+  checkIn.addEventListener("change", calcPrice);
+  checkOut.addEventListener("change", calcPrice);
+</script>

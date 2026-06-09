@@ -12,11 +12,12 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const User = require("./models/user");
 const ExpressError = require("./utils/ExpressError.js");
-const MongoStore = require("connect-mongo").default;
+const { MongoStore } = require("connect-mongo");
 
 const listingRoutes = require("./routes/listing.js");
 const reviewRoutes = require("./routes/review.js");
 const userRoutes = require("./routes/user.js");
+const bookingRoutes = require("./routes/booking.js");
 
 const dburl = process.env.ATLASDB_URL;
 const secret = process.env.SECRET || "wanderlust-secret";
@@ -93,16 +94,11 @@ app.use((req, res, next) => {
     next();
 });
 
-// ⚠️ TEMPORARY ROUTE - Remove after use!
-app.get("/clear-sessions", async (req, res) => {
-    await mongoose.connection.collection("sessions").deleteMany({});
-    res.send("✅ All sessions cleared! Now remove this route from app.js.");
-});
-
 // Routes
 app.get("/", (req, res) => res.send("root server is working"));
 app.use("/", userRoutes);
 app.use("/listings", listingRoutes);
+app.use("/bookings", bookingRoutes);
 app.use("/listings/:id/reviews", reviewRoutes);
 
 // 404 handler

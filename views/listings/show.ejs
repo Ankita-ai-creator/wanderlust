@@ -155,6 +155,9 @@
     </p>
     <div class="show-actions">
       <a href="/listings" class="back-link">← Back</a>
+      <% if (typeof currUser !== 'undefined' && currUser && listing.owner && !listing.owner.equals(currUser._id)) { %>
+        <a href="/bookings/<%= listing._id %>/new" class="btn-edit" style="background:#1a6b8a; color:white;">Book Now</a>
+      <% } %>
       <% if (typeof currUser !== 'undefined' && currUser && listing.owner && listing.owner.equals(currUser._id)) { %>
         <a href="/listings/<%= listing._id %>/edit" class="btn-edit">Edit</a>
         <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="margin:0;">
@@ -169,11 +172,13 @@
 <% if (typeof currUser !== 'undefined' && currUser) { %>
 <div class="review-form-container">
   <h2>Leave a Review</h2>
-  <form action="/listings/<%= listing._id %>/reviews" method="POST">
+  <!-- ✅ added needs-validation + onsubmit rating check -->
+  <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation" novalidate
+        onsubmit="const sel = document.querySelector('input[name=\'review[rating]\']:checked'); if (!sel || sel.value == 0) { alert('Please select a star rating!'); return false; }">
 
     <label>Your Rating</label>
     <fieldset class="starability-basic">
-      <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating"/>
+      <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" aria-label="No rating"/> <!-- ✅ removed checked -->
       <input type="radio" id="first-rate1" name="review[rating]" value="1"/>
       <label for="first-rate1">&nbsp;</label>
       <input type="radio" id="first-rate2" name="review[rating]" value="2"/>
@@ -249,5 +254,4 @@
 <script>
   const listingLocation = "<%= listing.location %>, <%= listing.country %>";
 </script>
-
-<script src="/js/map.js"></script>
+<!-- ✅ removed duplicate map.js script tag (already loaded in boilerplate) -->

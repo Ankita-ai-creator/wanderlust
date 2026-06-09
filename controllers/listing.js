@@ -64,12 +64,10 @@ module.exports.updateListing = async (req, res) => {
     let updatedData = req.body.listing;
 
     if (req.file) {
-        // Delete old image from Cloudinary
         let oldListing = await Listing.findById(id);
         if (oldListing.image && oldListing.image.filename) {
             await cloudinary.uploader.destroy(oldListing.image.filename);
         }
-
         updatedData.image = {
             url: req.file.path,
             filename: req.file.filename
@@ -85,12 +83,11 @@ module.exports.destroyListing = async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
 
-    // Delete image from Cloudinary
     if (listing.image && listing.image.filename) {
         await cloudinary.uploader.destroy(listing.image.filename);
     }
 
-    await Review.deleteMany({ _id: { $in: listing.reviews } });
+    // ✅ removed duplicate Review.deleteMany — model hook handles it
     await Listing.findByIdAndDelete(id);
     req.flash("success", "Listing deleted successfully!");
     res.redirect("/listings");

@@ -22,8 +22,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    padding: 0.4rem 0.9rem;
+    gap: 4px;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 30px;
     background: transparent;
@@ -36,9 +36,9 @@
     white-space: nowrap;
   }
 
-  .cat-btn i { width: 16px; height: 16px; stroke-width: 1.8; }
+  /* ✅ updated */
+  .cat-btn i { font-size: 1.1rem; }
   .cat-btn:hover, .cat-btn.active { background: #0f2a36; color: #fff; }
-  .cat-btn:hover i, .cat-btn.active i { stroke: #fff; }
 
   .cards-grid {
     display: grid;
@@ -87,24 +87,23 @@
   }
 </style>
 
-
 <div class="filter-section">
   <div class="filter-bar">
     <% const categories = [
-      { label: "All",       icon: "home",          value: "" },
-      { label: "Beach",     icon: "umbrella",      value: "beach" },
-      { label: "Mountain",  icon: "mountain-snow", value: "mountain" },
-      { label: "City",      icon: "building-2",    value: "city" },
-      { label: "Camping",   icon: "tent",          value: "camping" },
-      { label: "Castle",    icon: "castle",        value: "castle" },
-      { label: "Lakefront", icon: "waves",         value: "lakefront" },
-      { label: "Skiing",    icon: "snowflake",     value: "skiing" },
-      { label: "Tropical",  icon: "palmtree",      value: "tropical" },
+      { label: "All",       icon: "fa-solid fa-house",          value: "" },
+      { label: "Beach",     icon: "fa-solid fa-umbrella-beach", value: "beach" },
+      { label: "Mountain",  icon: "fa-solid fa-mountain",       value: "mountain" },
+      { label: "City",      icon: "fa-solid fa-city",           value: "city" },
+      { label: "Camping",   icon: "fa-solid fa-campground",     value: "camping" },
+      { label: "Castle",    icon: "fa-solid fa-chess-rook",     value: "castle" },
+      { label: "Lakefront", icon: "fa-solid fa-water",          value: "lakefront" },
+      { label: "Skiing",    icon: "fa-solid fa-person-skiing",  value: "skiing" },
+      { label: "Tropical",  icon: "fa-solid fa-leaf",           value: "tropical" },
     ]; %>
     <% for (let cat of categories) { %>
       <a href="?category=<%= cat.value %>"
          class="cat-btn <%= filters.category === cat.value || (!filters.category && cat.value === '') ? 'active' : '' %>">
-        <i data-lucide="<%= cat.icon %>"></i>
+        <i class="<%= cat.icon %>"></i>
         <%= cat.label %>
       </a>
     <% } %>
@@ -128,9 +127,3 @@
   </div>
   <% } %>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    lucide.createIcons();
-  });
-</script>

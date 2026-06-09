@@ -1,0 +1,79 @@
+<% layout('layouts/boilerplate') %>
+
+<style>
+  .bookings-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .bookings-container h2 {
+    color: #0f2a36;
+    margin-bottom: 1.5rem;
+  }
+
+  .booking-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .booking-info h4 {
+    color: #0f2a36;
+    margin-bottom: 0.3rem;
+  }
+
+  .booking-info p {
+    font-size: 0.85rem;
+    color: #777;
+    margin: 0.2rem 0;
+  }
+
+  .status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .status-pending  { background: #fff3cd; color: #856404; }
+  .status-approved { background: #d1e7dd; color: #0f5132; }
+  .status-rejected { background: #f8d7da; color: #842029; }
+
+  .no-bookings {
+    text-align: center;
+    color: #777;
+    padding: 3rem;
+  }
+</style>
+
+<div class="bookings-container">
+  <h2>My Bookings</h2>
+
+  <% if (bookings.length === 0) { %>
+    <div class="no-bookings">
+      <p>No bookings yet!</p>
+      <a href="/listings" style="color:#1a6b8a;">Browse Listings</a>
+    </div>
+  <% } else { %>
+    <% for (let booking of bookings) { %>
+    <div class="booking-card">
+      <div class="booking-info">
+        <h4><%= booking.listing ? booking.listing.title : "Listing Deleted" %></h4>
+        <p>📅 Check-in: <%= new Date(booking.checkIn).toDateString() %></p>
+        <p>📅 Check-out: <%= new Date(booking.checkOut).toDateString() %></p>
+        <p>💰 Total: ₹<%= booking.totalPrice.toLocaleString() %></p>
+        <p>🔖 Transaction ID: <%= booking.transactionId %></p>
+      </div>
+      <span class="status-badge status-<%= booking.status %>">
+        <%= booking.status.toUpperCase() %>
+      </span>
+    </div>
+    <% } %>
+  <% } %>
+</div>
